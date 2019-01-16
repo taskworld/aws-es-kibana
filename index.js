@@ -9,8 +9,6 @@ var stream = require('stream');
 var figlet = require('figlet');
 var basicAuth = require('express-basic-auth');
 var compress = require('compression');
-const fs = require('fs');
-const homedir = require('os').homedir();
 
 var yargs = require('yargs')
     .usage('usage: $0 [options] <aws-es-cluster-endpoint>')
@@ -207,8 +205,3 @@ console.log('Kibana available at http://' + BIND_ADDRESS + ':' + PORT + '/_plugi
 if (argv.H) {
     console.log('Health endpoint enabled at http://' + BIND_ADDRESS + ':' + PORT + argv.H);
 }
-
-fs.watch(`${homedir}/.aws/credentials`, (eventType, filename) => {
-    credentials = new AWS.SharedIniFileCredentials({profile: PROFILE});
-    AWS.config.credentials = credentials;
-});
