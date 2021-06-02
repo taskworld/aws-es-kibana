@@ -35,19 +35,13 @@ Example with hostname as cluster-endpoint:
 
 ### Run within docker container
 
-If you are familiar with Docker, you can run `aws-es-kibana` within a Docker container
+To build, use [`pack`](https://buildpacks.io/):
 
-You can pull the official container for use
-
-    docker pull santthosh/aws-es-kibana:latest
-
-(or) Build the image
-
-	docker build -t aws-es-kibana .
+    pack build aws-es-kibana --builder heroku/buildpacks:20
 
 Run the container (do not forget to pass the required environment variables)
 
-	docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -p 127.0.0.1:9200:9200 aws-es-kibana -b 0.0.0.0 <cluster-endpoint>
+	docker run --init --rm -ti --env-file=.env -p 9200:9200 aws-es-kibana
 
 
 ## Credits
