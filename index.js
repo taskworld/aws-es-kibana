@@ -155,7 +155,11 @@ if (argv.u && argv.a) {
 
     const basic = basicAuth({
         users: users,
-        challenge: true
+        challenge: true,
+        unauthorizedResponse: (req) => {
+            const hint = process.env.ISSUER_BASE_URL ? ' or go to `/login` to sign in with ' + process.env.ISSUER_BASE_URL : '';
+            return 'Credentials rejected. Please provide a valid credential' + hint + '.';
+        }
     });
 
     app.use(function(req, res, next) {
