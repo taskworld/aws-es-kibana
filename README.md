@@ -33,6 +33,26 @@ Example with hostname as cluster-endpoint:
 
 ![aws-es-kibana](https://raw.githubusercontent.com/santthosh/aws-es-kibana/master/aws-es-kibana.png)
 
+### OpenID Connect
+
+Using OpenID Connect-compatible IdPs you can allow people to access Elasticsearch with their credentials without using shared passwords. To use, set the following environment variables:
+
+```
+# See: https://github.com/auth0/express-openid-connect
+ISSUER_BASE_URL=https://accounts.google.com
+CLIENT_ID=1234567890-abcdefghijklmnopqrstuvwxyz1234567.apps.googleusercontent.com
+BASE_URL=https://aws-ws-kibana-abcdefghij-uc.a.run.app
+SECRET=eae9671c6692e1e13f4716cf7230e3f9d131299e577ed6a388c9aae08124da6e
+
+# For basic auth
+USER=user
+PASSWORD=123fa9770f3c02331fab5f4af52bed568607a7e5c54b8aa9813ab3cd534ae0a1
+```
+
+If your user has an active session via OpenID connect, then Basic Auth is bypassed.
+
+⚠️ **You MUST enable Basic authentication even if you do not use it.** Since OIDC support only bypasses Basic authentication, this means if Basic authentication is not set up, anyone can access your instance.
+
 ### Run within docker container
 
 To build, use [`pack`](https://buildpacks.io/):
