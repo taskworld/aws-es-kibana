@@ -49,7 +49,7 @@ USER=user
 PASSWORD=123fa9770f3c02331fab5f4af52bed568607a7e5c54b8aa9813ab3cd534ae0a1
 ```
 
-If your user has an active session via OpenID connect, then Basic Auth is bypassed.
+If your user has an active session via OpenID connect, then Basic Auth is bypassed. To login with OpenID Connect, go to `/login`.
 
 ⚠️ **You MUST enable Basic authentication even if you do not use it.** Since OIDC support only bypasses Basic authentication, this means if Basic authentication is not set up, anyone can access your instance.
 
