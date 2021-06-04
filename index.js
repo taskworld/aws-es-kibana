@@ -9,6 +9,7 @@ var stream = require('stream');
 var figlet = require('figlet');
 var basicAuth = require('express-basic-auth');
 var compress = require('compression');
+const { auth } = require('express-openid-connect')
 
 var yargs = require('yargs')
     .usage('usage: $0 [options] <aws-es-cluster-endpoint>')
@@ -141,18 +142,33 @@ if (argv.H) {
     });
 }
 
+if (process.env.ISSUER_BASE_URL) {
+    app.use(auth({ authRequired: false }));
+}
+
 if (argv.u && argv.a) {
+    var users = {};
+    var user = process.env.USER || process.env.AUTH_USER;
+    var pass = process.env.PASSWORD || process.env.AUTH_PASSWORD;
 
-  var users = {};
-  var user = process.env.USER || process.env.AUTH_USER;
-  var pass = process.env.PASSWORD || process.env.AUTH_PASSWORD;
+    users[user] = pass;
 
-  users[user] = pass;
+    const basic = basicAuth({
+        users: users,
+        challenge: true,
+        unauthorizedResponse: (req) => {
+            const hint = process.env.ISSUER_BASE_URL ? ' or go to `/login` to sign in with ' + process.env.ISSUER_BASE_URL : '';
+            return 'Credentials rejected. Please provide a valid credential' + hint + '.';
+        }
+    });
 
-  app.use(basicAuth({
-    users: users,
-    challenge: true
-  }));
+    app.use(function(req, res, next) {
+        if (req.oidc.user && req.oidc.user.sub) {
+            return next();
+        } else {
+            return basic(req, res, next);
+        }
+    });
 }
 
 app.use(async function (req, res) {
