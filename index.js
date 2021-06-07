@@ -144,6 +144,7 @@ if (argv.H) {
 
 if (process.env.ISSUER_BASE_URL) {
     app.use(auth({ authRequired: false }));
+    app.get('/login-kibana', (req, res) => res.oidc.login({ returnTo: '/_plugin/kibana' }));
 }
 
 if (argv.u && argv.a) {
@@ -157,7 +158,7 @@ if (argv.u && argv.a) {
         users: users,
         challenge: true,
         unauthorizedResponse: (req) => {
-            const hint = process.env.ISSUER_BASE_URL ? ' or go to `/login` to sign in with ' + process.env.ISSUER_BASE_URL : '';
+            const hint = process.env.ISSUER_BASE_URL ? ' or go to `/login` / `/login-kibana` to sign in with ' + process.env.ISSUER_BASE_URL : '';
             return 'Credentials rejected. Please provide a valid credential' + hint + '.';
         }
     });
