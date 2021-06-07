@@ -164,7 +164,7 @@ if (argv.u && argv.a) {
     });
 
     app.use(function(req, res, next) {
-        if (req.oidc.user && req.oidc.user.sub) {
+        if (req.oidc && req.oidc.user && req.oidc.user.sub) {
             return next();
         } else {
             return basic(req, res, next);
