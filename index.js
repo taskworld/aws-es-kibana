@@ -145,6 +145,7 @@ if (argv.H) {
 if (process.env.ISSUER_BASE_URL) {
     app.use(auth({ authRequired: false }));
     app.get('/login-kibana', (req, res) => res.oidc.login({ returnTo: '/_plugin/kibana' }));
+    app.get('/login/to/.+', (req, res) => res.oidc.login({ returnTo: '/' + req.originalUrl.substr('/login/to/'.length) }));
 }
 
 if (argv.u && argv.a) {
@@ -158,7 +159,7 @@ if (argv.u && argv.a) {
         users: users,
         challenge: true,
         unauthorizedResponse: (req) => {
-            const hint = process.env.ISSUER_BASE_URL ? ' or go to `/login` / `/login-kibana` to sign in with ' + process.env.ISSUER_BASE_URL : '';
+            const hint = process.env.ISSUER_BASE_URL ? ` or <a href="/login/to${req.url}">sign in with ${process.env.ISSUER_BASE_URL}</a>` : '';
             return 'Credentials rejected. Please provide a valid credential' + hint + '.';
         }
     });
